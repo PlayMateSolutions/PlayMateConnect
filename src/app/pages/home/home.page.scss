@@ -1,0 +1,82 @@
+.hero {
+  margin: 16px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+  }
+
+  ion-chip {
+    margin: 0;
+    background: #fff;
+  }
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.expiry {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .label {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .date {
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .note {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+
+    &.success { background: var(--ion-color-success); }
+    &.warning { background: var(--ion-color-warning); color: #000; }
+    &.danger { background: var(--ion-color-danger); }
+    &.medium { background: var(--ion-color-medium); }
+  }
+}
+
+.value {
+  text-align: right;
+  color: var(--ion-color-medium);
+  max-width: 65%;
+  white-space: normal;
+}
+
+.contact {
+  margin: 8px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}
