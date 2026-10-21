@@ -1,0 +1,60 @@
+<ion-content class="ion-padding">
+  <div class="login">
+    <div class="brand">
+      <div class="logo"><ion-icon name="barbell-outline"></ion-icon></div>
+      <h1>{{ club.displayName() }}</h1>
+      <p>Member portal</p>
+    </div>
+
+    @if (!hasGym()) {
+      <div class="notice">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <div>
+          <strong>Invalid link</strong>
+          <p>Scan your gym's QR code to open the portal.</p>
+        </div>
+      </div>
+    } @else {
+      <form (ngSubmit)="submit()" autocomplete="on">
+        <ion-input
+          label="Phone number"
+          labelPlacement="floating"
+          fill="outline"
+          type="tel"
+          inputmode="tel"
+          name="username"
+          autocomplete="username"
+          [(ngModel)]="phone"
+        ></ion-input>
+
+        <ion-input
+          label="PIN"
+          labelPlacement="floating"
+          fill="outline"
+          type="password"
+          inputmode="numeric"
+          maxlength="6"
+          name="password"
+          autocomplete="current-password"
+          [(ngModel)]="pin"
+        >
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+
+        @if (error(); as message) {
+          <p class="error">{{ message }}</p>
+        }
+
+        <ion-button type="submit" expand="block" [disabled]="loading()">
+          @if (loading()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          } @else {
+            Sign in
+          }
+        </ion-button>
+
+        <p class="hint">Forgot your PIN? Contact the club.</p>
+      </form>
+    }
+  </div>
+</ion-content>
