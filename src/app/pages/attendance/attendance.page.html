@@ -1,0 +1,31 @@
+<app-portal-header></app-portal-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (count() === 0) {
+    <div class="empty">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>No attendance recorded</p>
+    </div>
+  } @else {
+    @for (group of groups(); track group.label) {
+      <div class="month">
+        <span>{{ group.label }}</span>
+        <span>{{ group.rows.length }} {{ group.rows.length === 1 ? 'visit' : 'visits' }}</span>
+      </div>
+      @for (row of group.rows; track row.key) {
+        <div class="row">
+          <div class="when">
+            <span class="weekday">{{ row.weekday }}</span>
+            <span class="day">{{ row.day }}</span>
+          </div>
+          <div class="time">{{ row.time }}</div>
+          <div class="duration">{{ row.duration }}</div>
+        </div>
+      }
+    }
+  }
+</ion-content>

@@ -55,3 +55,22 @@ export function timeAgo(iso: string | null): string {
   }
   return `${Math.floor(hours / 24)}d ago`;
 }
+
+export function formatTime(value: unknown): string {
+  const date = parseDate(value);
+  if (!date) {
+    return na(value);
+  }
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+}
+
+/** Duration in minutes, as stored by the backend. */
+export function formatDuration(value: unknown): string {
+  const minutes = Number(value);
+  if (value === undefined || value === null || value === '' || isNaN(minutes)) {
+    return NA;
+  }
+  const hours = Math.floor(minutes / 60);
+  const rest = Math.round(minutes % 60);
+  return hours ? (rest ? `${hours}h ${rest}m` : `${hours}h`) : `${rest}m`;
+}
