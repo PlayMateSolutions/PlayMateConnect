@@ -1,0 +1,38 @@
+<app-portal-header></app-portal-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (payments().length === 0) {
+    <div class="empty">
+      <ion-icon name="card-outline"></ion-icon>
+      <p>No payments recorded</p>
+    </div>
+  } @else {
+    <div class="summary">
+      <span>{{ payments().length }} {{ payments().length === 1 ? 'payment' : 'payments' }}</span>
+      <strong>Total {{ total() }}</strong>
+    </div>
+
+    @for (p of payments(); track p.key) {
+      <div class="card">
+        <div class="top">
+          <div class="left">
+            <div class="date">{{ p.date }}</div>
+            <div class="type">{{ p.type }}</div>
+          </div>
+          <div class="amount">{{ p.amount }}</div>
+        </div>
+        @if (p.item) {
+          <div class="item">{{ p.item }}</div>
+        }
+        <div class="bottom">
+          <span class="period">{{ p.period }}</span>
+          <ion-chip [color]="p.statusColor">{{ p.status }}</ion-chip>
+        </div>
+      </div>
+    }
+  }
+</ion-content>
