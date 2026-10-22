@@ -2,11 +2,9 @@ import { Component, computed, inject } from '@angular/core';
 import { IonChip, IonContent, IonIcon, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { cardOutline } from 'ionicons/icons';
-import { formatDate, na } from '../../core/format';
+import { formatDate, formatMoney, na } from '../../core/format';
 import { PortalSessionService } from '../../core/portal-session.service';
 import { PortalHeaderComponent } from '../../shared/portal-header.component';
-
-const CURRENCY = '₹';
 
 @Component({
   selector: 'app-payments',
@@ -23,7 +21,7 @@ export class PaymentsPage {
       .sort((a, b) => new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime())
       .map((p) => ({
         key: p.id ?? `${p.date}-${p.amount}`,
-        amount: this.money(p.amount),
+        amount: formatMoney(p.amount),
         date: formatDate(p.date),
         type: na(p.paymentType),
         status: na(p.status),
@@ -34,7 +32,7 @@ export class PaymentsPage {
   );
 
   readonly total = computed(() =>
-    this.money(
+    formatMoney(
       (this.session.snapshot()?.payments ?? []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
     )
   );
@@ -46,13 +44,6 @@ export class PaymentsPage {
   async refresh(event: CustomEvent): Promise<void> {
     await this.session.refresh(true);
     (event.target as HTMLIonRefresherElement).complete();
-  }
-
-  private money(value: unknown): string {
-    const amount = Number(value);
-    return value === undefined || value === null || value === '' || isNaN(amount)
-      ? 'N/A'
-      : `${CURRENCY}${amount.toLocaleString('en-IN')}`;
   }
 
   private statusColor(status: unknown): string {

@@ -1,38 +1,41 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   AlertController,
   IonButton,
   IonChip,
   IonContent,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
+  IonIcon,
   IonRefresher,
-  IonRefresherContent
+  IonRefresherContent,
+  IonSkeletonText
 } from '@ionic/angular/standalone';
-import { daysUntil, formatDate, na } from '../../core/format';
+import { addIcons } from 'ionicons';
+import { arrowForwardOutline } from 'ionicons/icons';
+import {
+  daysUntil,
+  formatDate,
+  formatMoney,
+  na,
+  parseDate
+} from '../../core/format';
 import { PortalSessionService } from '../../core/portal-session.service';
 import { PortalHeaderComponent } from '../../shared/portal-header.component';
 
-interface Section {
-  title: string;
-  rows: { label: string; value: string }[];
-}
+const EXPIRING_WITHIN_DAYS = 14;
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
+    RouterLink,
     IonContent,
     IonRefresher,
     IonRefresherContent,
-    IonList,
-    IonListHeader,
-    IonItem,
-    IonLabel,
     IonChip,
     IonButton,
+    IonIcon,
+    IonSkeletonText,
     PortalHeaderComponent
   ],
   templateUrl: './home.page.html',
@@ -59,63 +62,93 @@ export class HomePage {
     this.status().toLowerCase() === 'active' ? 'success' : this.status() === 'N/A' ? 'medium' : 'danger'
   );
 
+  readonly payments = computed(() =>
+    [...(this.session.snapshot()?.payments ?? [])].sort(
+      (a, b) => (parseDate(b.date)?.getTime() ?? 0) - (parseDate(a.date)?.getTime() ?? 0)
+    )
+  );
+
+  /** Visits with a usable date, newest first. */
+  readonly visits = computed(() =>
+    (this.session.snapshot()?.attendance ?? [])
+      .map((a) => ({ a, date: parseDate(a.date || a.checkInTime) }))
+      .filter((v): v is { a: (typeof v)['a']; date: Date } => v.date !== null)
+      .sort((x, y) => y.date.getTime() - x.date.getTime())
+  );
+
   readonly expiry = computed(() => {
     const expiryDate = this.member()?.expiryDate;
     const days = daysUntil(expiryDate);
     if (days === null) {
-      return { date: 'N/A', note: '', color: 'medium' };
+      return { date: 'N/A', note: '', color: 'medium', progress: null as number | null, renew: false };
     }
     if (days < 0) {
-      return { date: formatDate(expiryDate), note: 'Expired', color: 'danger' };
+      return { date: formatDate(expiryDate), note: 'Expired', color: 'danger', progress: 100, renew: true };
     }
     const note = days === 0 ? 'Expires today' : `${days} ${days === 1 ? 'day' : 'days'} left`;
-    return { date: formatDate(expiryDate), note, color: days <= 14 ? 'warning' : 'success' };
+    const expiring = days <= EXPIRING_WITHIN_DAYS;
+    return {
+      date: formatDate(expiryDate),
+      note,
+      color: expiring ? 'warning' : 'success',
+      progress: this.periodProgress(),
+      renew: expiring
+    };
   });
 
-  readonly sections = computed<Section[]>(() => {
-    const m = this.member();
-    return [
-      {
-        title: 'Contact',
-        rows: [
-          { label: 'Email', value: na(m?.email) },
-          { label: 'Phone', value: na(m?.phone) },
-          { label: 'Place', value: na(m?.place) }
-        ]
-      },
-      {
-        title: 'Membership',
-        rows: [
-          { label: 'Type', value: na(m?.membershipType) },
-          { label: 'Joined', value: formatDate(m?.joinDate) },
-          { label: 'Expires', value: this.expiry().date },
-          { label: 'Sports', value: na(m?.sports) }
-        ]
-      },
-      {
-        title: 'Personal',
-        rows: [
-          { label: 'Gender', value: na(m?.gender) },
-          { label: 'Date of birth', value: formatDate(m?.dateOfBirth) }
-        ]
-      }
-    ];
+  readonly stats = computed(() => {
+    const now = new Date();
+    const visitsThisMonth = this.visits().filter(
+      (visit) => visit.date.getMonth() === now.getMonth() && visit.date.getFullYear() === now.getFullYear()
+    ).length;
+    const lastVisit = this.visits()[0]?.date;
+    const lastPayment = this.payments()[0];
+    return {
+      visitsThisMonth: String(visitsThisMonth),
+      lastVisit: lastVisit ? this.relativeDay(lastVisit) : 'N/A',
+      lastPaymentAmount: lastPayment ? formatMoney(lastPayment.amount) : 'N/A',
+      lastPaymentDate: lastPayment ? formatDate(lastPayment.date) : ''
+    };
   });
+
+  constructor() {
+    addIcons({ arrowForwardOutline });
+  }
 
   async refresh(event: CustomEvent): Promise<void> {
     await this.session.refresh(true);
     (event.target as HTMLIonRefresherElement).complete();
   }
 
-  async confirmLogout(): Promise<void> {
+  async renew(): Promise<void> {
     const alert = await this.alerts.create({
-      header: 'Log out?',
-      message: 'You will need your phone number and PIN to sign in again.',
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Log out', role: 'destructive', handler: () => this.session.logout() }
-      ]
+      header: 'Renew membership',
+      message: 'Please visit the club desk to renew your membership.',
+      buttons: ['OK']
     });
     await alert.present();
+  }
+
+  /** Percent of the latest paid period elapsed; falls back to the join date when no period exists. */
+  private periodProgress(): number | null {
+    const end = parseDate(this.member()?.expiryDate);
+    const latest = this.payments()
+      .map((p) => ({ start: parseDate(p.periodStart), end: parseDate(p.periodEnd) }))
+      .filter((p): p is { start: Date; end: Date } => p.start !== null && p.end !== null)
+      .sort((x, y) => y.end.getTime() - x.end.getTime())[0];
+    const start = latest?.start ?? parseDate(this.member()?.joinDate);
+    if (!start || !end || end <= start) {
+      return null;
+    }
+    const percent = ((Date.now() - start.getTime()) / (end.getTime() - start.getTime())) * 100;
+    return Math.min(100, Math.max(0, Math.round(percent)));
+  }
+
+  private relativeDay(date: Date): string {
+    const days = -(daysUntil(date.toISOString()) ?? 0);
+    if (days <= 0) {
+      return 'Today';
+    }
+    return days === 1 ? 'Yesterday' : `${days} days ago`;
   }
 }

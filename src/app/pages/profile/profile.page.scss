@@ -1,0 +1,52 @@
+.profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+}
+
+.avatar {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.identity {
+  min-width: 0;
+
+  h1 {
+    margin: 0 0 4px;
+    overflow-wrap: anywhere;
+    font-size: 20px;
+  }
+
+  ion-chip {
+    margin: 0;
+    background: #fff;
+  }
+}
+
+.value {
+  max-width: 65%;
+  color: var(--ion-color-medium);
+  text-align: right;
+  white-space: normal;
+}
+
+.contact {
+  margin: 8px 16px;
+  color: var(--ion-color-medium);
+  font-size: 13px;
+  text-align: center;
+}

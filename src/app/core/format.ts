@@ -8,12 +8,19 @@ export function na(value: unknown): string {
   return text || NA;
 }
 
-function parseDate(value: unknown): Date | null {
+export function parseDate(value: unknown): Date | null {
   if (!value) {
     return null;
   }
   const date = new Date(String(value));
   return isNaN(date.getTime()) ? null : date;
+}
+
+export function formatMoney(value: unknown): string {
+  const amount = Number(value);
+  return value === undefined || value === null || value === '' || isNaN(amount)
+    ? NA
+    : `₹${amount.toLocaleString('en-IN')}`;
 }
 
 export function formatDate(value: unknown): string {

@@ -5,38 +5,64 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div class="hero">
-    <div class="who">
-      <div class="avatar">{{ initials() }}</div>
-      <div>
-        <h2>{{ fullName() }}</h2>
-        <ion-chip [color]="statusColor()">{{ status() }}</ion-chip>
+  @if (member()) {
+    <div class="hero">
+      <div class="who">
+        <div class="avatar">{{ initials() }}</div>
+        <div>
+          <h2>{{ fullName() }}</h2>
+          <ion-chip [color]="statusColor()">{{ status() }}</ion-chip>
+        </div>
+      </div>
+      <div class="expiry">
+        <span class="label">Membership expires</span>
+        <span class="date">{{ expiry().date }}</span>
+        @if (expiry().progress !== null) {
+          <div class="track"><div class="fill" [style.width.%]="expiry().progress"></div></div>
+        }
+        <div class="expiry-foot">
+          @if (expiry().note) {
+            <span class="note" [class]="expiry().color">{{ expiry().note }}</span>
+          }
+          @if (expiry().renew) {
+            <ion-button size="small" color="light" (click)="renew()">Renew</ion-button>
+          }
+        </div>
       </div>
     </div>
-    <div class="expiry">
-      <span class="label">Membership expires</span>
-      <span class="date">{{ expiry().date }}</span>
-      @if (expiry().note) {
-        <span class="note" [class]="expiry().color">{{ expiry().note }}</span>
-      }
+
+    <div class="stats">
+      <a
+        class="stat stat-link"
+        routerLink="/attendance"
+        [attr.aria-label]="'View attendance. Last visit: ' + stats().lastVisit"
+      >
+        <span class="num">{{ stats().lastVisit }}</span>
+        <span class="cap">Last visit</span>
+        <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+      </a>
+      <a
+        class="stat stat-link"
+        routerLink="/payments"
+        [attr.aria-label]="'View payments. Last payment: ' + stats().lastPaymentAmount"
+      >
+        <span class="num">{{ stats().lastPaymentAmount }}</span>
+        <span class="cap">Last payment</span>
+        @if (stats().lastPaymentDate) {
+          <span class="meta">{{ stats().lastPaymentDate }}</span>
+        }
+        <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+      </a>
+      <div class="stat stat-wide">
+        <span class="cap">Visits this month</span>
+        <span class="num">{{ stats().visitsThisMonth }}</span>
+      </div>
     </div>
-  </div>
-
-  @for (section of sections(); track section.title) {
-    <ion-list [inset]="true">
-      <ion-list-header>{{ section.title }}</ion-list-header>
-      @for (row of section.rows; track row.label) {
-        <ion-item>
-          <ion-label>{{ row.label }}</ion-label>
-          <ion-label slot="end" class="value">{{ row.value }}</ion-label>
-        </ion-item>
-      }
-    </ion-list>
+  } @else {
+    <div class="hero skeleton">
+      <ion-skeleton-text [animated]="true" style="width: 60%; height: 24px"></ion-skeleton-text>
+      <ion-skeleton-text [animated]="true" style="width: 40%; height: 20px"></ion-skeleton-text>
+      <ion-skeleton-text [animated]="true" style="width: 100%; height: 8px"></ion-skeleton-text>
+    </div>
   }
-
-  <p class="contact">To correct your details, contact the club.</p>
-
-  <div class="ion-padding">
-    <ion-button expand="block" color="medium" fill="outline" (click)="confirmLogout()">Log out</ion-button>
-  </div>
 </ion-content>

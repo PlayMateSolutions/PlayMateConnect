@@ -1,0 +1,33 @@
+<app-portal-header></app-portal-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="profile-heading">
+    <div class="avatar">{{ initials() }}</div>
+    <div class="identity">
+      <h1>{{ fullName() }}</h1>
+      <ion-chip [color]="statusColor()">{{ status() }}</ion-chip>
+    </div>
+  </div>
+
+  @for (section of sections(); track section.title) {
+    <ion-list [inset]="true">
+      <ion-list-header>{{ section.title }}</ion-list-header>
+      @for (row of section.rows; track row.label) {
+        <ion-item>
+          <ion-label>{{ row.label }}</ion-label>
+          <ion-label slot="end" class="value">{{ row.value }}</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <p class="contact">To correct your details, contact the club.</p>
+
+  <div class="ion-padding">
+    <ion-button expand="block" color="medium" fill="clear" (click)="confirmLogout()">Log out</ion-button>
+  </div>
+</ion-content>

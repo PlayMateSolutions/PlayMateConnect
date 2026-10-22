@@ -51,9 +51,34 @@
     font-weight: 700;
   }
 
+  .track {
+    margin-top: 10px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    overflow: hidden;
+  }
+
+  .fill {
+    height: 100%;
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  .expiry-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    min-height: 32px;
+
+    ion-button {
+      margin: 0 0 0 auto;
+    }
+  }
+
   .note {
     align-self: flex-start;
-    margin-top: 6px;
     padding: 2px 10px;
     border-radius: 12px;
     font-size: 13px;
@@ -74,9 +99,84 @@
   white-space: normal;
 }
 
-.contact {
-  margin: 8px 16px;
-  text-align: center;
-  font-size: 13px;
+.empty {
   color: var(--ion-color-medium);
+}
+
+.hero.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--ion-color-light);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 16px;
+}
+
+.stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 132px;
+  padding: 20px 16px;
+  border-radius: 12px;
+  background: var(--ion-color-light);
+  text-align: center;
+
+  .num {
+    font-size: 22px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .cap {
+    font-size: 13px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.stat-link {
+  padding-right: 22px;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    position: absolute;
+    top: 10px;
+    right: 8px;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.stat-wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
+  padding: 16px 20px;
+  text-align: left;
+
+  .num {
+    font-size: 24px;
+  }
+}
+
+.meta {
+  color: var(--ion-color-medium);
+  font-size: 11px;
 }
