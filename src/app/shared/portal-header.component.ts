@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { IonButton, IonHeader, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { ClubContextService } from '../core/club-context.service';
 import { timeAgo } from '../core/format';
@@ -10,18 +10,20 @@ import { PortalSessionService } from '../core/portal-session.service';
   imports: [IonHeader, IonToolbar, IonTitle, IonButton, IonSpinner],
   template: `
     <ion-header>
-      <ion-toolbar>
-        <ion-title>
-          {{ club.displayName() }}
-          <div class="sync">
-            @if (session.refreshing()) {
-              <ion-spinner name="dots"></ion-spinner> Syncing
-            } @else {
-              Synced {{ ago(session.syncedAt()) }}
-            }
-          </div>
-        </ion-title>
-      </ion-toolbar>
+      @if (showToolbar) {
+        <ion-toolbar>
+          <ion-title>
+            {{ club.displayName() }}
+            <div class="sync">
+              @if (session.refreshing()) {
+                <ion-spinner name="dots"></ion-spinner> Syncing
+              } @else {
+                Synced {{ ago(session.syncedAt()) }}
+              }
+            </div>
+          </ion-title>
+        </ion-toolbar>
+      }
       @if (session.refreshError(); as message) {
         <div class="stale">
           <span>Couldn't refresh, showing saved data.</span>
@@ -49,6 +51,7 @@ import { PortalSessionService } from '../core/portal-session.service';
   ]
 })
 export class PortalHeaderComponent {
+  @Input() showToolbar = true;
   readonly session = inject(PortalSessionService);
   readonly club = inject(ClubContextService);
   readonly ago = timeAgo;

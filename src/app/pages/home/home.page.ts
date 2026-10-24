@@ -8,17 +8,27 @@ import {
   IonIcon,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
   IonSkeletonText
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { arrowForwardOutline } from 'ionicons/icons';
+import {
+  arrowForwardOutline,
+  calendarOutline,
+  callOutline,
+  cardOutline,
+  personCircleOutline,
+  walkOutline
+} from 'ionicons/icons';
 import {
   daysUntil,
   formatDate,
   formatMoney,
   na,
-  parseDate
+  parseDate,
+  timeAgo
 } from '../../core/format';
+import { ClubContextService } from '../../core/club-context.service';
 import { PortalSessionService } from '../../core/portal-session.service';
 import { PortalHeaderComponent } from '../../shared/portal-header.component';
 
@@ -32,6 +42,7 @@ const EXPIRING_WITHIN_DAYS = 14;
     IonContent,
     IonRefresher,
     IonRefresherContent,
+    IonSpinner,
     IonChip,
     IonButton,
     IonIcon,
@@ -43,7 +54,11 @@ const EXPIRING_WITHIN_DAYS = 14;
 })
 export class HomePage {
   private readonly session = inject(PortalSessionService);
+  readonly club = inject(ClubContextService);
   private readonly alerts = inject(AlertController);
+  readonly refreshing = this.session.refreshing;
+  readonly syncedAt = this.session.syncedAt;
+  readonly ago = timeAgo;
 
   readonly member = computed(() => this.session.snapshot()?.member ?? null);
 
@@ -107,12 +122,13 @@ export class HomePage {
       visitsThisMonth: String(visitsThisMonth),
       lastVisit: lastVisit ? this.relativeDay(lastVisit) : 'N/A',
       lastPaymentAmount: lastPayment ? formatMoney(lastPayment.amount) : 'N/A',
-      lastPaymentDate: lastPayment ? formatDate(lastPayment.date) : ''
+      lastPaymentDate:
+        parseDate(lastPayment?.date)?.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) ?? ''
     };
   });
 
   constructor() {
-    addIcons({ arrowForwardOutline });
+    addIcons({ arrowForwardOutline, calendarOutline, callOutline, cardOutline, personCircleOutline, walkOutline });
   }
 
   async refresh(event: CustomEvent): Promise<void> {
