@@ -5,27 +5,115 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  @if (count() === 0) {
-    <div class="empty">
-      <ion-icon name="calendar-outline"></ion-icon>
-      <p>No attendance recorded</p>
-    </div>
-  } @else {
-    @for (group of groups(); track group.label) {
-      <div class="month">
-        <span>{{ group.label }}</span>
-        <span>{{ group.rows.length }} {{ group.rows.length === 1 ? 'visit' : 'visits' }}</span>
-      </div>
-      @for (row of group.rows; track row.key) {
-        <div class="row">
-          <div class="when">
-            <span class="weekday">{{ row.weekday }}</span>
-            <span class="day">{{ row.day }}</span>
-          </div>
-          <div class="time">{{ row.time }}</div>
-          <div class="duration">{{ row.duration }}</div>
+  <main class="attendance-page">
+    <section class="summary" aria-label="Attendance summary">
+      <div class="summary-heading">
+        <div>
+          <p class="eyebrow">{{ monthLabel() }}</p>
+          <h1>{{ monthVisits().length }} {{ monthVisits().length === 1 ? 'visit' : 'visits' }}</h1>
         </div>
-      }
-    }
-  }
+        <button class="current-month" type="button" (click)="goToCurrentMonth()">This month</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong>{{ monthVisits().length }}</strong>
+          <span>Visits</span>
+        </div>
+        <div class="stat">
+          <strong>{{ thisWeekVisits() }}</strong>
+          <span>This week</span>
+        </div>
+        <div class="stat">
+          <strong>{{ daysVisited() }}</strong>
+          <span>Days visited</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="calendar" aria-label="Attendance calendar">
+      <div class="calendar-heading">
+        <button class="calendar-nav" type="button" (click)="changeMonth(-1)" aria-label="Previous month">
+          <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+        </button>
+        <h2>{{ monthLabel() }}</h2>
+        <button class="calendar-nav" type="button" (click)="changeMonth(1)" aria-label="Next month">
+          <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </div>
+
+      <div class="calendar-grid" role="grid" [attr.aria-label]="monthLabel()">
+        <div class="weekdays" role="row">
+          @for (weekday of weekdays; track weekday) {
+            <span role="columnheader">{{ weekday }}</span>
+          }
+        </div>
+        @for (week of weeks(); track $index) {
+          <div class="week" role="row">
+            @for (day of week; track $index) {
+              @if (day) {
+                <button
+                  class="calendar-day"
+                  type="button"
+                  role="gridcell"
+                  [class.visited]="day.visits > 0"
+                  [class.selected]="selectedDateKey() === day.key"
+                  [class.today]="todayKey === day.key"
+                  [attr.aria-label]="dayLabel(day)"
+                  [attr.aria-pressed]="selectedDateKey() === day.key"
+                  (click)="selectDate(day)"
+                >
+                  <span>{{ day.date.getDate() }}</span>
+                  @if (day.visits > 0) {
+                    <!-- <span class="visit-count">{{ day.visits }}</span> -->
+                  }
+                </button>
+              } @else {
+                <span class="calendar-day empty" role="gridcell" aria-hidden="true"></span>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <div class="legend" aria-label="Calendar legend">
+        <span><i class="visited-dot"></i> Visited</span>
+        <span><i class="selected-dot"></i> Selected</span>
+      </div>
+    </section>
+
+    <section class="history" aria-label="Visit history">
+      <div class="history-heading">
+        <h2>{{ historyDateKey() ? 'Visits on ' + historyLabel() : 'Visit history' }}</h2>
+        @if (historyDateKey()) {
+          <button class="all-visits" type="button" (click)="showAllVisits()">All visits</button>
+        } @else {
+          <span class="record-count">{{ visibleVisits().length }} {{ visibleVisits().length === 1 ? 'record' : 'records' }}</span>
+        }
+      </div>
+
+      <div class="history-list">
+        @if (visibleVisits().length === 0) {
+          <div class="empty">
+            <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+            <p>{{ historyDateKey() ? 'No visits on this day' : 'No attendance recorded' }}</p>
+          </div>
+        } @else {
+          @for (row of visibleVisits(); track row.key) {
+            <article class="visit-row">
+              <div class="visit-date">
+                <span>{{ row.date.toLocaleDateString('en-GB', { weekday: 'short' }) }}</span>
+                <strong>{{ row.date.getDate() }}</strong>
+              </div>
+              <div class="visit-details">
+                <strong>{{ row.date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) }}</strong>
+                <span>{{ row.time }}</span>
+              </div>
+              <span class="duration">{{ row.duration }}</span>
+            </article>
+          }
+        }
+      </div>
+    </section>
+  </main>
 </ion-content>
