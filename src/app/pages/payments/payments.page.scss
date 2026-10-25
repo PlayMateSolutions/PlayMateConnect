@@ -17,7 +17,7 @@ ion-content {
   flex-direction: column;
   overflow: hidden;
   margin: 0 auto;
-  padding: 16px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+  padding: calc(56px + env(safe-area-inset-top, 0px)) 0 calc(12px + env(safe-area-inset-bottom, 0px));
 }
 
 .year-navigation {
