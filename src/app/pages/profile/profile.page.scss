@@ -13,7 +13,11 @@ ion-content {
   position: absolute;
   z-index: 1;
   top: calc(56px + env(safe-area-inset-top, 0px));
+  right: 20px;
   left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .action-icon {
@@ -40,7 +44,7 @@ ion-content {
 .profile-intro {
   display: flex;
   flex-direction: column;
-  margin: calc(56px + env(safe-area-inset-top, 0px)) 20px 18px 76px;
+  margin: calc(112px + env(safe-area-inset-top, 0px)) 20px 18px;
 
   .eyebrow {
     margin: 0 0 5px;
@@ -152,11 +156,9 @@ ion-content {
   text-align: center;
 }
 
-.logout-wrap {
-  margin: 12px 16px 24px;
-}
-
 .logout-button {
+  flex: 0 0 auto;
+  margin: 0;
   --border-color: rgba(205, 224, 255, 0.28);
   --color: var(--home-text);
 }

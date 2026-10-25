@@ -44,6 +44,18 @@ form {
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  ion-button {
+    --background: #fff;
+    --background-activated: #dce8f8;
+    --background-hover: #f0f5fc;
+    --color: #10213a;
+    --border-radius: 14px;
+    --box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    height: 52px;
+    font-weight: 700;
+    text-transform: none;
+  }
 }
 
 .error {

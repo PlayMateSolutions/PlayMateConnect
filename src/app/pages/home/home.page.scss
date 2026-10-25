@@ -42,22 +42,6 @@ ion-content {
   flex-direction: column;
   margin: calc(56px + env(safe-area-inset-top, 0px)) 76px 18px 20px;
 
-  .subtitle {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin: 7px 0 0;
-    color: var(--home-muted);
-    font-size: 14px;
-    white-space: nowrap;
-
-    ion-spinner {
-      width: 14px;
-      height: 14px;
-      color: var(--home-accent);
-    }
-  }
-
   .eyebrow {
     margin: 0 0 5px;
     color: #c7ddff;
@@ -73,6 +57,22 @@ ion-content {
     overflow-wrap: anywhere;
   }
 
+}
+
+.last-synced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 24px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  color: var(--home-muted);
+  font-size: 12px;
+
+  ion-spinner {
+    width: 14px;
+    height: 14px;
+    color: var(--home-accent);
+  }
 }
 
 .hero {

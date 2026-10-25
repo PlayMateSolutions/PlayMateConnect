@@ -9,6 +9,10 @@
     <a class="action-icon" routerLink="/home" aria-label="Back to home" title="Back to home">
       <ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon>
     </a>
+    <ion-button fill="outline" class="logout-button" (click)="confirmLogout()">
+      <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+      Log out
+    </ion-button>
   </nav>
 
   <section class="profile-intro">
@@ -38,11 +42,4 @@
   }
 
   <p class="contact">To update your details, contact the club.</p>
-
-  <div class="logout-wrap">
-    <ion-button expand="block" fill="outline" class="logout-button" (click)="confirmLogout()">
-      <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
-      Log out
-    </ion-button>
-  </div>
 </ion-content>

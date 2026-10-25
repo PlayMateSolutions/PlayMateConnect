@@ -15,13 +15,6 @@
     <section class="home-intro">
       <p class="eyebrow">{{ club.displayName() }}</p>
       <h1>Welcome back, {{ member()?.firstName || 'there' }}</h1>
-      <p class="subtitle">
-        @if (refreshing()) {
-          <ion-spinner name="dots"></ion-spinner> Syncing
-        } @else {
-          Last synced at {{ ago(syncedAt()) }}
-        }
-      </p>
     </section>
 
     <div class="hero">
@@ -87,4 +80,12 @@
       <ion-skeleton-text [animated]="true" style="width: 100%; height: 8px"></ion-skeleton-text>
     </div>
   }
+
+  <p class="last-synced">
+    @if (refreshing()) {
+      <ion-spinner name="dots"></ion-spinner> Syncing
+    } @else {
+      Last synced at {{ ago(syncedAt()) }}
+    }
+  </p>
 </ion-content>
