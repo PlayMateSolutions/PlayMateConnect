@@ -10,7 +10,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { alertCircleOutline, barbellOutline } from 'ionicons/icons';
+import { alertCircleOutline } from 'ionicons/icons';
 import { ClubContextService } from '../../core/club-context.service';
 import { PortalSessionService } from '../../core/portal-session.service';
 
@@ -33,7 +33,7 @@ export class LoginPage {
   readonly hasGym = computed(() => this.club.sheetId() !== null);
 
   constructor() {
-    addIcons({ alertCircleOutline, barbellOutline });
+    addIcons({ alertCircleOutline });
   }
 
   async submit(): Promise<void> {
