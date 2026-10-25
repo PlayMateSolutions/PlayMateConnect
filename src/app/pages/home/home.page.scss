@@ -10,10 +10,10 @@ ion-content {
 }
 
 .home-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: calc(56px + env(safe-area-inset-top, 0px)) 20px 0;
+  position: absolute;
+  z-index: 1;
+  top: calc(56px + env(safe-area-inset-top, 0px));
+  right: 20px;
 }
 
 .action-icon {
@@ -39,11 +39,8 @@ ion-content {
 
 .home-intro {
   display: flex;
-  min-height: 184px;
   flex-direction: column;
-  justify-content: flex-end;
-  margin: 16px 20px 18px;
-  padding-bottom: 4px;
+  margin: calc(56px + env(safe-area-inset-top, 0px)) 76px 18px 20px;
 
   .subtitle {
     display: inline-flex;

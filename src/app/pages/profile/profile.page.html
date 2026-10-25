@@ -1,33 +1,48 @@
-<app-portal-header></app-portal-header>
+<app-portal-header [showToolbar]="false"></app-portal-header>
 
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <nav class="profile-nav" aria-label="Profile navigation">
+    <a class="action-icon" routerLink="/home" aria-label="Back to home" title="Back to home">
+      <ion-icon name="arrow-back-outline" aria-hidden="true"></ion-icon>
+    </a>
+  </nav>
+
+  <section class="profile-intro">
+    <p class="eyebrow">{{ club.displayName() }}</p>
+    <h1>Your profile</h1>
+    <p class="subtitle">Membership and contact details</p>
+  </section>
+
   <div class="profile-heading">
     <div class="avatar">{{ initials() }}</div>
     <div class="identity">
-      <h1>{{ fullName() }}</h1>
+      <h2>{{ fullName() }}</h2>
       <ion-chip [color]="statusColor()">{{ status() }}</ion-chip>
     </div>
   </div>
 
   @for (section of sections(); track section.title) {
-    <ion-list [inset]="true">
-      <ion-list-header>{{ section.title }}</ion-list-header>
+    <section class="profile-section" [attr.aria-label]="section.title">
+      <h2>{{ section.title }}</h2>
       @for (row of section.rows; track row.label) {
-        <ion-item>
+        <div class="detail-row">
           <ion-label>{{ row.label }}</ion-label>
-          <ion-label slot="end" class="value">{{ row.value }}</ion-label>
-        </ion-item>
+          <span class="value">{{ row.value }}</span>
+        </div>
       }
-    </ion-list>
+    </section>
   }
 
-  <p class="contact">To correct your details, contact the club.</p>
+  <p class="contact">To update your details, contact the club.</p>
 
-  <div class="ion-padding">
-    <ion-button expand="block" color="medium" fill="clear" (click)="confirmLogout()">Log out</ion-button>
+  <div class="logout-wrap">
+    <ion-button expand="block" fill="outline" class="logout-button" (click)="confirmLogout()">
+      <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+      Log out
+    </ion-button>
   </div>
 </ion-content>

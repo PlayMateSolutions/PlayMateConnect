@@ -15,7 +15,6 @@ import { addIcons } from 'ionicons';
 import {
   arrowForwardOutline,
   calendarOutline,
-  callOutline,
   cardOutline,
   personCircleOutline,
   walkOutline
@@ -128,7 +127,7 @@ export class HomePage {
   });
 
   constructor() {
-    addIcons({ arrowForwardOutline, calendarOutline, callOutline, cardOutline, personCircleOutline, walkOutline });
+    addIcons({ arrowForwardOutline, calendarOutline, cardOutline, personCircleOutline, walkOutline });
   }
 
   async refresh(event: CustomEvent): Promise<void> {

@@ -1,16 +1,18 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   AlertController,
   IonButton,
   IonChip,
   IonContent,
-  IonItem,
+  IonIcon,
   IonLabel,
-  IonList,
-  IonListHeader,
   IonRefresher,
   IonRefresherContent
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowBackOutline, logOutOutline } from 'ionicons/icons';
+import { ClubContextService } from '../../core/club-context.service';
 import { formatDate, na } from '../../core/format';
 import { PortalSessionService } from '../../core/portal-session.service';
 import { PortalHeaderComponent } from '../../shared/portal-header.component';
@@ -24,15 +26,14 @@ interface ProfileSection {
   selector: 'app-profile',
   standalone: true,
   imports: [
+    RouterLink,
     IonContent,
     IonRefresher,
     IonRefresherContent,
-    IonList,
-    IonListHeader,
-    IonItem,
     IonLabel,
     IonChip,
     IonButton,
+    IonIcon,
     PortalHeaderComponent
   ],
   templateUrl: './profile.page.html',
@@ -41,6 +42,7 @@ interface ProfileSection {
 export class ProfilePage {
   private readonly session = inject(PortalSessionService);
   private readonly alerts = inject(AlertController);
+  readonly club = inject(ClubContextService);
 
   readonly member = computed(() => this.session.snapshot()?.member ?? null);
   readonly fullName = computed(() => {
@@ -84,6 +86,10 @@ export class ProfilePage {
       }
     ];
   });
+
+  constructor() {
+    addIcons({ arrowBackOutline, logOutOutline });
+  }
 
   async refresh(event: CustomEvent): Promise<void> {
     await this.session.refresh(true);
