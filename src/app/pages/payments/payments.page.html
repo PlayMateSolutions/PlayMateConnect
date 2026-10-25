@@ -5,34 +5,100 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  @if (payments().length === 0) {
-    <div class="empty">
-      <ion-icon name="card-outline"></ion-icon>
-      <p>No payments recorded</p>
-    </div>
-  } @else {
-    <div class="summary">
-      <span>{{ payments().length }} {{ payments().length === 1 ? 'payment' : 'payments' }}</span>
-      <strong>Total {{ total() }}</strong>
-    </div>
-
-    @for (p of payments(); track p.key) {
-      <div class="card">
-        <div class="top">
-          <div class="left">
-            <div class="date">{{ p.date }}</div>
-            <div class="type">{{ p.type }}</div>
-          </div>
-          <div class="amount">{{ p.amount }}</div>
-        </div>
-        @if (p.item) {
-          <div class="item">{{ p.item }}</div>
-        }
-        <div class="bottom">
-          <span class="period">{{ p.period }}</span>
-          <ion-chip [color]="p.statusColor">{{ p.status }}</ion-chip>
-        </div>
+  <main class="payments-page">
+    @if (allPayments().length === 0) {
+      <div class="empty">
+        <ion-icon name="card-outline" aria-hidden="true"></ion-icon>
+        <p>No payments recorded</p>
       </div>
+    } @else {
+      <nav class="year-navigation" aria-label="Payment year">
+        <button
+          class="year-nav-button"
+          type="button"
+          (click)="changeYear(-1)"
+          [disabled]="!canChangeYear(-1)"
+          [attr.aria-label]="'Previous year, ' + (selectedYear() - 1)"
+        >
+          <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+        </button>
+        <h1>{{ selectedYear() }}</h1>
+        <button
+          class="year-nav-button"
+          type="button"
+          (click)="changeYear(1)"
+          [disabled]="!canChangeYear(1)"
+          [attr.aria-label]="'Next year, ' + (selectedYear() + 1)"
+        >
+          <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </nav>
+
+      <section class="payment-summary" aria-label="Payment summary">
+        <p class="summary-eyebrow">{{ selectedYear() }} summary</p>
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <strong>{{ payments().length }}</strong>
+            <span>{{ payments().length === 1 ? 'Payment' : 'Payments' }}</span>
+          </div>
+          <div class="summary-stat">
+            <strong>{{ total() }}</strong>
+            <span>Total amount</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="category-filter" aria-label="Payment filters">
+        <label id="payment-category-label">Filter by category</label>
+        <ion-select
+          class="category-select"
+          aria-labelledby="payment-category-label"
+          [value]="selectedCategory()"
+          interface="popover"
+          (ionChange)="setCategory($event.detail.value)"
+        >
+          <ion-select-option value="all">All categories</ion-select-option>
+          @for (category of categories(); track category) {
+            <ion-select-option [value]="category">{{ category }}</ion-select-option>
+          }
+        </ion-select>
+      </section>
+
+      @if (payments().length === 0) {
+        <div class="empty filtered-empty">
+          <ion-icon name="card-outline" aria-hidden="true"></ion-icon>
+          <p>No payments in this category for {{ selectedYear() }}</p>
+          <button type="button" class="reset-filter" (click)="setCategory('all')">Show all categories</button>
+        </div>
+      } @else {
+        <section class="payment-list" aria-label="Payments">
+          @for (p of payments(); track p.key) {
+            <article class="payment-row">
+              <div class="payment-date" aria-label="Payment date">
+                <strong>{{ p.day || '—' }}</strong>
+                <span>{{ p.month || 'Date' }}</span>
+              </div>
+              <div class="payment-copy">
+                <div class="payment-primary">
+                  <div class="payment-label">
+                    <strong class="payment-title">{{ p.notes || p.item || p.type }}</strong>
+                    @if (p.type !== 'N/A') {
+                      <span class="payment-type">{{ p.type }}</span>
+                    }
+                  </div>
+                  <strong class="amount">{{ p.amount }}</strong>
+                </div>
+                <div class="payment-secondary">
+                  <span class="period">Period: {{ p.period }}</span>
+                  @if (p.showStatus) {
+                    <span class="status">{{ p.status }}</span>
+                  }
+                </div>
+              </div>
+            </article>
+          }
+        </section>
+      }
     }
-  }
+  </main>
 </ion-content>

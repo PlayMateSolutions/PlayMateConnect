@@ -36,6 +36,7 @@ export interface PortalPayment {
   status?: string;
   category?: string;
   quantity?: string | number;
+  notes?: string;
 }
 
 export interface PortalSnapshot {
