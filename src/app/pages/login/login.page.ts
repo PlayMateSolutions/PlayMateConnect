@@ -10,7 +10,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { alertCircleOutline } from 'ionicons/icons';
+import { alertCircleOutline, callOutline, lockClosedOutline } from 'ionicons/icons';
 import { ClubContextService } from '../../core/club-context.service';
 import { PortalSessionService } from '../../core/portal-session.service';
 
@@ -33,7 +33,21 @@ export class LoginPage {
   readonly hasGym = computed(() => this.club.sheetId() !== null);
 
   constructor() {
-    addIcons({ alertCircleOutline });
+    addIcons({ alertCircleOutline, callOutline, lockClosedOutline });
+  }
+
+  get canSubmit(): boolean {
+    return this.phone.trim().length > 0 && this.pin.length === 6;
+  }
+
+  onPinInput(event: Event): void {
+    const input = event.target as HTMLIonInputElement;
+    const digits = String(input.value ?? '').replace(/\D/g, '');
+    if (digits !== input.value) {
+      input.value = digits;
+    }
+    this.pin = digits;
+    this.error.set(null);
   }
 
   async submit(): Promise<void> {

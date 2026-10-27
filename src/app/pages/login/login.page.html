@@ -6,55 +6,71 @@
       <p>Member portal</p>
     </div>
 
-    @if (!hasGym()) {
-      <div class="notice">
-        <ion-icon name="alert-circle-outline"></ion-icon>
-        <div>
-          <strong>Invalid link</strong>
-          <p>Scan your gym's QR code to open the portal.</p>
+    <div class="card">
+      @if (!hasGym()) {
+        <div class="notice">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <div>
+            <strong>Invalid link</strong>
+            <p>Scan your gym's QR code to open the portal.</p>
+          </div>
         </div>
-      </div>
-    } @else {
-      <form (ngSubmit)="submit()" autocomplete="on">
-        <ion-input
-          label="Phone number"
-          labelPlacement="floating"
-          fill="outline"
-          type="tel"
-          inputmode="tel"
-          name="username"
-          autocomplete="username"
-          [(ngModel)]="phone"
-        ></ion-input>
+      } @else {
+        <h2>Sign in to your account</h2>
 
-        <ion-input
-          label="PIN"
-          labelPlacement="floating"
-          fill="outline"
-          type="password"
-          inputmode="numeric"
-          maxlength="6"
-          name="password"
-          autocomplete="current-password"
-          [(ngModel)]="pin"
-        >
-          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-        </ion-input>
+        <form (ngSubmit)="submit()" autocomplete="on">
+          <ion-input
+            label="Phone number"
+            labelPlacement="floating"
+            fill="outline"
+            type="tel"
+            inputmode="tel"
+            enterkeyhint="next"
+            maxlength="15"
+            name="username"
+            autocomplete="username"
+            [autofocus]="true"
+            [(ngModel)]="phone"
+            (ionInput)="error.set(null)"
+          >
+            <ion-icon slot="start" name="call-outline" aria-hidden="true"></ion-icon>
+          </ion-input>
 
-        @if (error(); as message) {
-          <p class="error">{{ message }}</p>
-        }
+          <ion-input
+            label="6-digit PIN"
+            labelPlacement="floating"
+            fill="outline"
+            type="password"
+            inputmode="numeric"
+            enterkeyhint="go"
+            maxlength="6"
+            name="password"
+            autocomplete="current-password"
+            [(ngModel)]="pin"
+            (ionInput)="onPinInput($event)"
+          >
+            <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
+            <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+          </ion-input>
 
-        <ion-button type="submit" expand="block" [disabled]="loading()">
-          @if (loading()) {
-            <ion-spinner name="crescent"></ion-spinner>
-          } @else {
-            Sign in
+          @if (error(); as message) {
+            <div class="error" role="alert">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              <span>{{ message }}</span>
+            </div>
           }
-        </ion-button>
 
-        <p class="hint">Forgot your PIN? Contact the club.</p>
-      </form>
-    }
+          <ion-button type="submit" expand="block" [disabled]="loading() || !canSubmit">
+            @if (loading()) {
+              <ion-spinner name="crescent"></ion-spinner>
+            } @else {
+              Sign in
+            }
+          </ion-button>
+
+          <p class="hint">Forgot your PIN? Contact the club.</p>
+        </form>
+      }
+    </div>
   </div>
 </ion-content>
