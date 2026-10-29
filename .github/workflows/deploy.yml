@@ -33,8 +33,9 @@ jobs:
 
       - name: Build
         run: |
-          npm run build -- --configuration production --base-href "/${{ github.event.repository.name }}/"
+          npm run build -- --configuration production --base-href "/"
           cp www/index.html www/404.html
+          echo 'membership.gymmate.co.in' > www/CNAME
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
