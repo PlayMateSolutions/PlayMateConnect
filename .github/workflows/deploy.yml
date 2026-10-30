@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build -- --configuration production --base-href "/"
+          npm run build -- --configuration production --base-href "https://membership.gymmate.co.in/"
           cp www/index.html www/404.html
           echo 'membership.gymmate.co.in' > www/CNAME
 
